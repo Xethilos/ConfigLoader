@@ -220,7 +220,7 @@ class ConfigLoader extends Nette\Object {
         foreach ($this->additional as $name => $callback) {
             if (isset($array[$name])) {
                 if (is_callable($callback)) {
-                    $this->data[$name] = $callback($array[$name], $baseName);
+                    $this->data[$name] = $callback($array[$name], $baseName, $this);
                 } else {
                     $this->data[$name] = $array[$name];
                 }
