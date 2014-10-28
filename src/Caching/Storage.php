@@ -1,4 +1,5 @@
 <?php
+namespace Caching;
 
 class Storage extends Nette\Caching\Storages\FileStorage implements Nette\Caching\IStorage {
     
