@@ -1,0 +1,24 @@
+parameters:
+    limitPerPage: 20
+    array:
+        nette: yes
+model: 'Model\Model'
+component: ['Component\Component']
+menu:
+    parent: [name: 'Advertisement',
+            icon: 'pe-7s-display1']
+    childrens: [[name: 'Add',
+            url: 'Advertisement:add',
+            icon: 'pe-7s-plus'],
+            
+            [name: 'List',
+            url: 'Advertisement:',
+            icon: 'pe-7s-keypad']]
+authorizator:
+    resources:
+        news: 'News'
+    privileges:
+        news:
+            add: 'Add'
+            edit: 'Edit'
+            delete: 'Delete'
