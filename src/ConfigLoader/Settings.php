@@ -15,7 +15,7 @@ class Settings implements ArrayAccess {
     protected $namespace;
     
     /** @var Nette\Caching\Cache */
-    protected $parent = NULL;
+    protected $cache = NULL;
     
     /**
      * @param array $values
