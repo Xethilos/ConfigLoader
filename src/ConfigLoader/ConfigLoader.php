@@ -120,8 +120,8 @@ class ConfigLoader extends Nette\Object {
         $finder = new Nette\Utils\Finder;
         
         if ($this->checkCache() === NULL) {
-            foreach ($finder->find('*.neon')->from($this->appDir . $this->namespace) as $file) {
-                $this->parse($file);
+            foreach ($files = $finder->find('*.neon')->from($this->appDir . $this->namespace) as $file) {
+                return $this->manyParse($files);
             }
             
             return TRUE;
@@ -134,12 +134,20 @@ class ConfigLoader extends Nette\Object {
         $finder = new Nette\Utils\Finder;
         
         if ($this->processDisabled() === FALSE) {
-            foreach ($finder->find('*.neon')->from($this->appDir . $this->namespace) as $file) {
+            foreach ($files = $finder->find('*.neon')->from($this->appDir . $this->namespace) as $file) {
                 if ($file->getMTime() > $this->cache->getMTime('_configLoader')) {
-                    $this->parse($file);
+                    return $this->manyParse($files);
                 }
             }
         }
+    }
+    
+    protected function manyParse($files) {
+        foreach ($files as $file) {
+            $this->parse($file);
+        }
+        
+        $this->saveToCache($this->data);
     }
     
     /**
@@ -159,6 +167,7 @@ class ConfigLoader extends Nette\Object {
     
     /**
      * @param SplFileInfo $file
+     * @param array $default
      */
     protected function parse($file) {
         $neon = new Neon((string) $file);
@@ -166,7 +175,7 @@ class ConfigLoader extends Nette\Object {
         $baseName = str_replace(' ', '', Strings::capitalize(str_replace('.', ' ',$file->getBasename('.neon'))));
 
         $array = $neon->decode();
-        
+
         // Process models
         if (isset($array['model'])) {
             foreach ((array) $array['model'] as $model) {
@@ -218,13 +227,13 @@ class ConfigLoader extends Nette\Object {
         }
         
         foreach ($this->additional as $name => $callback) {
+            if (!isset($this->data[$name])) {
+                $this->data[$name] = array();
+            }
+            
             if (isset($array[$name])) {
-                if (is_callable($callback)) {
-                    $this->data[$name] = $callback($array[$name], $baseName, $this);
-                } else {
-                    $this->data[$name] = $array[$name];
-                }
-             }
+                $this->data[$name] = call_user_func_array($callback, array($array[$name], $this->data[$name], $baseName));
+            }
         }
         
         if ($this->writer !== NULL) {
