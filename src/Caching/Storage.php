@@ -1,6 +1,8 @@
 <?php
 namespace Caching;
 
+use Nette;
+
 class Storage extends Nette\Caching\Storages\FileStorage implements Nette\Caching\IStorage {
     
     /**
@@ -11,7 +13,7 @@ class Storage extends Nette\Caching\Storages\FileStorage implements Nette\Cachin
     public function getMTime($key) {
         $hash = $this->getCacheFile($key);
         
-        $file = new SplFileInfo($hash);
+        $file = new \SplFileInfo($hash);
         
         return $file->getMTime();
     }
