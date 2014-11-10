@@ -14,7 +14,7 @@ use Nette\Utils\Strings;
  */
 class ConfigLoader extends Nette\Object {
     
-    const DISABLED = 0;
+    const DISABLE = 0;
     const CHECK = 1;
     
     protected $data = array(
@@ -156,7 +156,7 @@ class ConfigLoader extends Nette\Object {
      * @return self
      */
     public function execute($type = 0) {
-        if ($type === self::DISABLED) {
+        if ($type === self::DISABLE) {
             $this->processDisabled();
         } else {
             $this->processCheck();
