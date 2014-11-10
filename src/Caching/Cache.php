@@ -1,5 +1,7 @@
-<?
+<?php
 namespace Caching;
+
+use Nette;
 
 class Cache extends Nette\Caching\Cache {
     
